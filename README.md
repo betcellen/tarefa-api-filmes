@@ -1,4 +1,4 @@
-# 🎬 Projeto Filmes - OMDB API
+# Projeto Filmes - OMDB API
 
 Aplicativo Angular para consulta de filmes usando a API OMDB (Open Movie Database).
 

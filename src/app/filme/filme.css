@@ -1,0 +1,19 @@
+/* Estilos gerais */
+:host {
+  display: block;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  div {
+    padding: 10px !important;
+  }
+  
+  img {
+    width: 100% !important;
+  }
+  
+  button {
+    width: 100%;
+  }
+}

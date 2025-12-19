@@ -1,52 +1,130 @@
-# ProjetoFilmes
+# 🎬 Projeto Filmes - OMDB API
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.3.
+Aplicativo Angular para consulta de filmes usando a API OMDB (Open Movie Database).
 
-## Development server
+## Funcionalidades
 
-To start a local development server, run:
+✅ **Busca Individual (Opção 't')**: Procura por um filme específico e exibe detalhes completos
+✅ **Busca por Lista (Opção 's')**: Procura por todos os filmes com um determinado título
+✅ **Interface Intuitiva**: Seleção entre os dois tipos de busca com radio buttons
+✅ **Validação de Entrada**: Aviso quando o campo está vazio
+✅ **Tratamento de Erros**: Mensagens claras quando nenhum resultado é encontrado
+✅ **Design Responsivo**: Funciona bem em dispositivos móveis e desktop
 
+## Tecnologias Utilizadas
+
+- **Angular 21** - Framework frontend
+- **TypeScript** - Linguagem de programação
+- **RxJS** - Tratamento de operações assíncronas
+- **HttpClient** - Consumo de APIs REST
+- **Angular Forms** - Processamento de formulários
+
+## Estrutura do Projeto
+
+```
+src/
+├── app/
+│   ├── app.ts              # Componente raiz da aplicação
+│   ├── app.html            # Template raiz
+│   ├── app.css             # Estilos da aplicação
+│   ├── app.config.ts       # Configuração do Angular (HttpClient, Router)
+│   ├── filme.service.ts    # Serviço para consumo da API OMDB
+│   └── filme/
+│       ├── filme.ts        # Componente principal de busca
+│       ├── filme.html      # Template do componente
+│       └── filme.css       # Estilos do componente
+├── main.ts                 # Arquivo de inicialização
+├── styles.css              # Estilos globais
+└── index.html              # Página HTML principal
+```
+
+## Como Usar
+
+### 1. Instalar Dependências
+```bash
+npm install
+```
+
+### 2. Iniciar o Servidor de Desenvolvimento
+```bash
+npm run start
+```
+ou
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+A aplicação estará disponível em `http://localhost:4200/`
 
-## Code scaffolding
+### 3. Usando a Aplicação
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+1. **Digite o nome do filme** no campo de entrada
+2. **Escolha o tipo de busca**:
+   - **Busca Individual (t)**: Retorna detalhes completos de um filme específico
+   - **Busca por Lista (s)**: Retorna uma lista de todos os filmes com esse título
+3. **Clique em "Buscar"** ou pressione **Enter**
+4. **Visualize os resultados** com imagens e informações detalhadas
 
-```bash
-ng generate component component-name
+## API OMDB
+
+Este projeto utiliza a API OMDB (Open Movie Database) gratuita:
+- **URL Base**: `https://www.omdbapi.com/`
+- **API Key**: Obtém uma chave gratuita em https://www.omdbapi.com/apikey.aspx
+- **Tipos de Busca**:
+  - `t=` (title) - Buscar filme específico por título
+  - `s=` (search) - Buscar lista de filmes por título
+
+### Exemplo de URL
+```
+https://www.omdbapi.com/?apikey=SUACHAVE&t=The%20Matrix
+https://www.omdbapi.com/?apikey=SUACHAVE&s=Matrix
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Configurando a sua API Key
 
-```bash
-ng generate --help
+1. Abra o arquivo `src/app/omdb-config.ts`.
+2. Substitua o valor de `OMDB_API_KEY` pela sua chave pessoal obtida em https://www.omdbapi.com/apikey.aspx.
+
+Exemplo:
+
+```ts
+export const OMDB_API_KEY = 'SUA_CHAVE_AQUI';
 ```
 
-## Building
+Depois de configurar a chave, reinicie o servidor de desenvolvimento se ele estiver em execução.
 
-To build the project run:
+## FilmeService
+
+Serviço responsável por consumir a API OMDB:
+
+```typescript
+@Injectable({ providedIn: 'root' })
+export class FilmeService {
+  // Buscar um filme específico
+  buscarIndividual(titulo: string): Observable<any>
+  
+  // Buscar uma lista de filmes
+  buscarLista(titulo: string): Observable<any>
+}
+```
+
+## Compilar para Produção
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Os arquivos compilados estarão no diretório `dist/`.
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Rodar Testes
 
 ```bash
 ng test
 ```
 
-## Running end-to-end tests
+## Licença
 
-For end-to-end (e2e) testing, run:
+Este projeto é fornecido como está, sem garantias.
 
 ```bash
 ng e2e

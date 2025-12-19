@@ -1,0 +1,86 @@
+<div style="padding: 20px; font-family: Arial; max-width: 800px; margin: 0 auto;">
+  <h1>Busca de Filmes - OMDB API</h1>
+  
+  <div style="margin-bottom: 20px;">
+    <input 
+      type="text" 
+      [(ngModel)]="titulo" 
+      placeholder="Digite o nome do filme..."
+      style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px;"
+      (keyup.enter)="pesquisar()">
+  </div>
+
+  <div style="margin-bottom: 20px;">
+    <label style="margin-right: 20px;">
+      <input type="radio" [(ngModel)]="tipo" value="t" name="tipo"> 
+      <strong>Busca Individual (t)</strong>
+    </label>
+    <label>
+      <input type="radio" [(ngModel)]="tipo" value="s" name="tipo"> 
+      <strong>Busca por Lista (s)</strong>
+    </label>
+  </div>
+
+  <button 
+    (click)="pesquisar()"
+    [disabled]="carregando"
+    style="padding: 10px 20px; font-size: 16px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 20px;">
+    {{ carregando ? 'Buscando...' : 'Buscar' }}
+  </button>
+
+  <hr>
+
+  <!-- Mensagem de erro -->
+  <div *ngIf="erro" style="color: #d32f2f; background-color: #ffebee; padding: 15px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #d32f2f;">
+    <strong> Erro:</strong> {{ erro }}
+    <p style="margin-top: 10px; font-size: 12px; color: #c62828;">
+      💡 Dica: Abra o Console do Navegador (F12 ou Ctrl+Shift+I) para ver mais detalhes do erro
+    </p>
+  </div>
+
+  <!-- Resultado Individual -->
+  <div *ngIf="resultado && resultado.Response !== 'False'" style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; background-color: #f9f9f9;">
+    <h3 style="margin: 0 0 10px 0;">{{ resultado.Title }}</h3>
+    <div style="display: flex; gap: 20px;">
+      <div>
+        <img 
+          [src]="resultado.Poster" 
+          width="150" 
+          style="border-radius: 4px; object-fit: cover;"
+          [alt]="resultado.Title">
+      </div>
+      <div style="flex: 1;">
+        <p><strong>Ano:</strong> {{ resultado.Year }}</p>
+        <p><strong>Classificação:</strong> {{ resultado.Rated }}</p>
+        <p><strong>Duração:</strong> {{ resultado.Runtime }}</p>
+        <p><strong>Gênero:</strong> {{ resultado.Genre }}</p>
+        <p><strong>Diretor:</strong> {{ resultado.Director }}</p>
+        <p><strong>Atores:</strong> {{ resultado.Actors }}</p>
+        <p><strong>IMDb Rating:</strong> {{ resultado.imdbRating }}/10</p>
+        <p><strong>Sinopse:</strong></p>
+        <p style="font-style: italic;">{{ resultado.Plot }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de Filmes -->
+  <div *ngIf="lista.length > 0">
+    <h3>Resultados Encontrados: {{ lista.length }}</h3>
+    <div>
+      <div *ngFor="let f of lista" style="border: 1px solid #ddd; border-radius: 4px; padding: 15px; margin-bottom: 10px; display: flex; gap: 15px; background-color: #f9f9f9;">
+        <img 
+          [src]="f.Poster" 
+          width="80" 
+          height="120"
+          style="border-radius: 4px; object-fit: cover;"
+          [alt]="f.Title"
+          onerror="this.src='https://via.placeholder.com/80x120?text=Sem+Imagem'">
+        <div style="flex: 1;">
+          <p style="margin: 0 0 5px 0;"><strong>{{ f.Title }}</strong></p>
+          <p style="margin: 0 0 5px 0;">Ano: {{ f.Year }}</p>
+          <p style="margin: 0; color: #666;">Tipo: {{ f.Type }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Conexão OMDB API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            background-color: #f0f0f0;
+            word-break: break-word;
+            white-space: pre-wrap;
+            font-size: 12px;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 Teste de Conexão - OMDB API</h1>
+        <p>Use este teste para verificar se a API está funcionando corretamente.</p>
+        
+        <div>
+            <label for="titulo">Digite o nome de um filme:</label>
+            <input type="text" id="titulo" placeholder="Ex: The Matrix" value="The Matrix">
+        </div>
+
+        <button onclick="testarBuscaIndividual()">🔍 Testar Busca Individual (t)</button>
+        <button onclick="testarBuscaLista()">📋 Testar Busca por Lista (s)</button>
+        <button onclick="limparResultado()">🗑️ Limpar</button>
+
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        const API_KEY = '2c6fceb1';
+        const API_URL = 'https://www.omdbapi.com/';
+
+        function testarBuscaIndividual() {
+            const titulo = document.getElementById('titulo').value;
+            if (!titulo.trim()) {
+                mostrarResultado('Por favor, digite um título!', 'error');
+                return;
+            }
+
+            const url = `${API_URL}?apikey=${API_KEY}&t=${encodeURIComponent(titulo)}`;
+            mostrarResultado('Conectando à API...', '');
+            
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.Response === 'False') {
+                        mostrarResultado(`❌ ${data.Error}`, 'error');
+                    } else {
+                        const info = `
+✅ SUCESSO! Filme encontrado:
+
+Título: ${data.Title}
+Ano: ${data.Year}
+Gênero: ${data.Genre}
+Diretor: ${data.Director}
+Atores: ${data.Actors}
+Sinopse: ${data.Plot}
+IMDb Rating: ${data.imdbRating}
+
+(Resposta completa da API abaixo)
+${JSON.stringify(data, null, 2)}`;
+                        mostrarResultado(info, 'success');
+                    }
+                })
+                .catch(error => {
+                    mostrarResultado(`❌ ERRO: ${error.message}\n\nVerifique:\n1. Sua conexão com a internet\n2. Se a chave de API está válida\n3. Se há bloqueio de CORS\n\nAbra o console (F12) para mais detalhes.`, 'error');
+                    console.error('Erro completo:', error);
+                });
+        }
+
+        function testarBuscaLista() {
+            const titulo = document.getElementById('titulo').value;
+            if (!titulo.trim()) {
+                mostrarResultado('Por favor, digite um título!', 'error');
+                return;
+            }
+
+            const url = `${API_URL}?apikey=${API_KEY}&s=${encodeURIComponent(titulo)}`;
+            mostrarResultado('Conectando à API...', '');
+            
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.Response === 'False') {
+                        mostrarResultado(`❌ ${data.Error}`, 'error');
+                    } else {
+                        const filmes = data.Search || [];
+                        let info = `✅ SUCESSO! ${filmes.length} filme(s) encontrado(s):\n\n`;
+                        filmes.forEach((f, i) => {
+                            info += `${i + 1}. ${f.Title} (${f.Year}) - Tipo: ${f.Type}\n`;
+                        });
+                        info += `\n(Resposta completa da API abaixo)\n${JSON.stringify(data, null, 2)}`;
+                        mostrarResultado(info, 'success');
+                    }
+                })
+                .catch(error => {
+                    mostrarResultado(`❌ ERRO: ${error.message}\n\nVerifique:\n1. Sua conexão com a internet\n2. Se a chave de API está válida\n3. Se há bloqueio de CORS\n\nAbra o console (F12) para mais detalhes.`, 'error');
+                    console.error('Erro completo:', error);
+                });
+        }
+
+        function mostrarResultado(texto, classe) {
+            const el = document.getElementById('resultado');
+            el.textContent = texto;
+            el.className = 'result ' + classe;
+        }
+
+        function limparResultado() {
+            document.getElementById('resultado').textContent = '';
+            document.getElementById('resultado').className = 'result';
+        }
+    </script>
+</body>
+</html>
